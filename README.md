@@ -1,0 +1,3 @@
+Encapsulamento: no Atalho, quem usa só precisa saber que existe destino (só leitura) e redirecionar(); o atributo privado __destino e a checagem de ancestrais ficam escondidos.
+Herança: o Atalho herda de Item, então nome, pai, caminho() e mover_para() já vêm prontos; a interface é "ele é um Item" e a implementação reaproveitada fica no Item.
+Polimorfismo: quem usa chama tamanho() e mostrar() sem saber se é Arquivo, Pasta ou Atalho; cada um esconde a sua própria conta (o Atalho sempre devolve 1).
