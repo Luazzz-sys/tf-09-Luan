@@ -162,4 +162,47 @@ def tentar(rotulo, acao):
     except Exception as erro:
         print(rotulo, "->", type(erro).__name__ + ":", erro)
 
+        # Atalho é um item que aponta para outro item (arquivo ou pasta).
+# Ele ocupa só 1 byte, não importa o tamanho do destino.
+class Atalho(Item):
+    __slots__ = ("__destino",)
+
+    # Valida o destino antes de criar o item, para não deixar um
+    # atalho pela metade dentro da pasta se a validação falhar.
+    def __init__(self, nome, destino, pai=None):
+        self.__validar(destino, pai)
+        super().__init__(nome, pai)
+        self.__destino = destino
+
+    # Só leitura: não existe setter, então atalho.destino = x dá erro.
+    @property
+    def destino(self):
+        return self.__destino
+
+    # Única forma de trocar o destino, usando a mesma validação do construtor.
+    def redirecionar(self, novo_destino):
+        self.__validar(novo_destino, self.pai)
+        self.__destino = novo_destino
+
+    # Recusa o próprio atalho ou qualquer ancestral dele como destino.
+    # Fica num lugar só para não duplicar código.
+    def __validar(self, destino, pai):
+        if destino is self:
+            raise ValueError("um atalho não pode apontar para si mesmo")
+        ancestral = pai
+        while ancestral is not None:
+            if ancestral is destino:
+                raise ValueError("um atalho não pode apontar para " + destino.nome + ", que contém o atalho")
+            ancestral = ancestral.pai
+
+    # O atalho sempre ocupa 1 byte.
+    def tamanho(self):
+        return 1
+
+    # Imprime "nome -> caminho do destino" com o mesmo recuo dos outros.
+    def mostrar(self):
+        recuo = "    " * self.profundidade()
+        print(recuo + self.nome + " -> " + self.__destino.caminho())
+        
+
 
