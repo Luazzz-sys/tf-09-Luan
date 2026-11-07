@@ -203,6 +203,31 @@ class Atalho(Item):
     def mostrar(self):
         recuo = "    " * self.profundidade()
         print(recuo + self.nome + " -> " + self.__destino.caminho())
+disco = Pasta("C:")
+usuarios = Pasta("Users", disco)
+lua = Pasta("lua", usuarios)
+desktop = Pasta("Desktop", lua)
+trabalhos = Pasta("Trabalhos", desktop)
+atalhos = Pasta("Atalhos", desktop)
+
+notas = Arquivo("notas.txt", 120, desktop)
+slide = Arquivo("slide.pdf", 5000, trabalhos)
+
+atalho_arquivo = Atalho("slide-atalho", slide, atalhos)
+atalho_pasta = Atalho("trabalhos-atalho", trabalhos, desktop)
+
+# 1) árvore completa
+disco.mostrar()
+
+# 2) espaço total: um arquivo, uma pasta com o atalho dentro e uma Lixeira
+lixeira = Lixeira()
+lixeira.descartar(Arquivo("rascunho.txt", 40))
+print(espaco_total([notas, atalhos, lixeira]))
+
+# 3) três tentativas que precisam falhar
+tentar("atalho.destino = outro item", lambda: setattr(atalho_arquivo, "destino", notas))
+tentar("atalho apontando para si mesmo", lambda: atalho_arquivo.redirecionar(atalho_arquivo))
+tentar("atalho apontando para a pasta onde está", lambda: atalho_arquivo.redirecionar(atalhos))
         
 
 
